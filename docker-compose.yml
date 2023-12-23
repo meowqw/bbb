@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "${COMPOSE_PORT}:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - .:/var/www/html/bbb
+    depends_on:
+      - php
+
+  php:
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: "${COMPOSE_MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "${COMPOSE_MYSQL_DATABASE}"
+      MYSQL_USER: "${COMPOSE_MYSQL_USER}"
+      MYSQL_PASSWORD: "${COMPOSE_MYSQL_PASSWORD}"
+    ports:
+      - "${COMPOSE_MYSQL_PORT}:3306"
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+
+  redis:
+    image: redis:alpine
+    restart: always
+    command: [ "sh", "-c", "exec redis-server --requirepass \"${REDIS_PASSWORD}\"" ]
+    volumes:
+      - "./docker/redis/data:/data"
+    ports:
+      - "${COMPOSE_REDIS_PORT}:6379"
