@@ -11,6 +11,7 @@ class SettingsDTO
     private float $sellPercent;
     private float $bybitCommission;
     private float $orderAmount;
+    private string $serviceStatus;
 
     /**
      * @return string
@@ -135,6 +136,24 @@ class SettingsDTO
     public function setOrderAmount(float $orderAmount): SettingsDTO
     {
         $this->orderAmount = $orderAmount;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getServiceStatus(): string
+    {
+        return $this->serviceStatus;
+    }
+
+    /**
+     * @param string $serviceStatus
+     * @return SettingsDTO
+     */
+    public function setServiceStatus(string $serviceStatus): SettingsDTO
+    {
+        $this->serviceStatus = $serviceStatus;
         return $this;
     }
 }

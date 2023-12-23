@@ -47,4 +47,16 @@ class SettingService
             ->setBybitCommission($bybitCommission)
             ->setOrderAmount($orderAmount);
     }
+
+    /**
+     * Получить текущий статус сервиса (on/off)
+     *
+     * @return string
+     */
+    public static function getServiceStatus(): string
+    {
+        /** @var Setting $serviceStatus */
+        $serviceStatus = Setting::query()->where('code', Setting::SERVICE_STATUS_CODE)->first();
+        return $serviceStatus->getValue();
+    }
 }

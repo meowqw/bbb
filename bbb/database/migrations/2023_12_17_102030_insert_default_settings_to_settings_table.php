@@ -26,7 +26,7 @@ return new class extends Migration {
                 [
                     'type' => 'main',
                     'name' => 'Процент на продажу',
-                    'code' => 'sale_percent_difference',
+                    'code' => 'sell_percent_difference',
                     'value' => '0.15'
                 ],
                 [
@@ -52,6 +52,12 @@ return new class extends Migration {
                     'name' => 'Котируемая валюта пары',
                     'code' => 'quoted_coin',
                     'value' => 'USDT'
+                ],
+                [
+                    'type' => 'main',
+                    'name' => 'Текущий статус сервиса',
+                    'code' => 'service_status',
+                    'value' => 'off'
                 ],
             ]
         );

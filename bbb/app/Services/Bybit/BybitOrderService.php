@@ -4,6 +4,7 @@ namespace App\Services\Bybit;
 
 use App\Models\Order\Order;
 use App\Models\PriceHistory\PriceHistory;
+use App\Models\Setting\Setting;
 use App\Services\Setting\SettingService;
 use App\Services\Trend\TrendLogic;
 use App\Services\Trend\TrendLogic\DTO\TrendLogicDTO;
@@ -22,6 +23,10 @@ class BybitOrderService
      */
     public static function orderProcessing(): void
     {
+        if (SettingService::getServiceStatus() == Setting::STATUS_SERVICE_OFF) {
+            return;
+        }
+
         $settings = SettingService::getSettings();
 
         // Проверка наличия ордера со статусом open

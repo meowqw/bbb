@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 class Setting extends Model
 {
     const
+        SERVICE_STATUS_CODE = 'service_status',
         ORDER_AMOUNT_CODE = 'order_amount',
         BUY_PERCENT_DIFFERENCE_CODE = 'buy_percent_difference',
         SELL_PERCENT_DIFFERENCE_CODE = 'sell_percent_difference',
@@ -20,6 +21,10 @@ class Setting extends Model
         BYBIT_COMMISSION_CODE = 'bybit_commission',
         BASE_COIN = 'base_coin',
         QUOTED_COIN = 'quoted_coin';
+
+    const
+        STATUS_SERVICE_ON = 'on',
+        STATUS_SERVICE_OFF = 'off';
 
     /**
      * @return string
