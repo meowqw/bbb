@@ -32,16 +32,16 @@ class NeutralLogic implements TrendLogicInterface
             return;
         }
 
-        if ($currentPairPriceWithCommission < $dto->getSalePercent()) {
+        if ($currentPairPriceWithCommission < $dto->getSellPercent()) {
             Log::info(
                 'Нейтральная: Ордер №' . $dto->getOrderId() .
                 ' текущий процент разницы (' . $currentPairPriceWithCommission .
-                ') < ожидаемого процента для продажи (' . $dto->getSalePercent() . ')'
+                ') < ожидаемого процента для продажи (' . $dto->getSellPercent() . ')'
             );
             return;
         }
 
-        $sale = self::sale($dto, $dto->getBaseBalance());
+        $sale = self::sell($dto, $dto->getBaseBalance());
 
         if ($sale) {
             $dto->getOrder()->setStatus(Order::STATUS_CLOSE)->save();
@@ -58,14 +58,14 @@ class NeutralLogic implements TrendLogicInterface
      * @param float $amount
      * @return bool
      */
-    private function sale(TrendLogicDTO $dto, float $amount): bool
+    private function sell(TrendLogicDTO $dto, float $amount): bool
     {
         // продажа и создание записи о продаже
-        $sale = BybitService::sale($dto->getPair(), $amount);
+        $sale = BybitService::sell($dto->getPair(), $amount);
         if ($sale) {
             (new Request())
                 ->setOrderId($dto->getOrderId())
-                ->setType(Request::TYPE_SALE)
+                ->setType(Request::TYPE_SELL)
                 ->setAmount($amount)->save();
 
             return true;

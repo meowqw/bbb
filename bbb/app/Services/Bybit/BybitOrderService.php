@@ -4,7 +4,7 @@ namespace App\Services\Bybit;
 
 use App\Models\Order\Order;
 use App\Models\PriceHistory\PriceHistory;
-use App\Models\Setting\Setting;
+use App\Services\Setting\SettingService;
 use App\Services\Trend\TrendLogic;
 use App\Services\Trend\TrendLogic\DTO\TrendLogicDTO;
 use App\Services\Trend\TrendLogic\TrendLogicFactory;
@@ -22,35 +22,28 @@ class BybitOrderService
      */
     public static function orderProcessing(): void
     {
+        $settings = SettingService::getSettings();
+
         // Проверка наличия ордера со статусом open
         $order = Order::query()->where('status', Order::STATUS_OPEN)->first();
-
-        $settings = Setting::query()->get();
-        $baseCoin = $settings->where('code', Setting::BASE_COIN)->first()->getValue();
-        $quotedCoin = $settings->where('code', Setting::QUOTED_COIN)->first()->getValue();
-        $pair = $baseCoin . $quotedCoin;
-        $buyPercent = (float)$settings->where('code', Setting::BUY_PERCENT_DIFFERENCE_CODE)->first()->getValue();
-        $salePercent = (float)$settings->where('code', Setting::SALE_PERCENT_DIFFERENCE_CODE)->first()->getValue();
-        $bybitCommission = (float)$settings->where('code', Setting::BYBIT_COMMISSION_CODE)->first()->getValue();
-        $orderAmount = (float)$settings->where('code', Setting::ORDER_AMOUNT_CODE)->first()->getValue();
         // получение текущей цены пары
-        $currentPairPrice = BybitService::getCurrentPrice($pair);
+        $currentPairPrice = BybitService::getCurrentPrice($settings->getPair());
         // получение минимальной цены покупки
-        $minOrderAmt = BybitService::getMinOrderAmt($pair);
+        $minOrderAmt = BybitService::getMinOrderAmt($settings->getPair());
         // получить баланс quoted
-        $quotedCoinBalance = BybitService::getWalletBalance($quotedCoin);
-        $baseCoinBalance = BybitService::getWalletBalance($baseCoin);
+        $quotedCoinBalance = BybitService::getWalletBalance($settings->getQuotedCoin());
+        $baseCoinBalance = BybitService::getWalletBalance($settings->getBaseCoin());
 
         Log::info('Текущая цена пары: ' . $currentPairPrice);
 
         if (is_null($order)) {
             // создание ордера
-            $order = (new Order())->setStatus(Order::STATUS_OPEN)->setPair($pair);
+            $order = (new Order())->setStatus(Order::STATUS_OPEN)->setPair($settings->getPair());
             Log::info('Ордер создан');
         }
 
         if ($quotedCoinBalance == 0) {
-            Log::error("Баланс $quotedCoin = 0, создание ордера не представляется возможным");
+            Log::error('Баланс' . $settings->getQuotedCoin() . ' = 0, создание ордера не представляется возможным');
             return;
         }
 
@@ -69,14 +62,14 @@ class BybitOrderService
 
         $trendLogicDTO = (new TrendLogicDTO)
             ->setOrderId($order->getId())
-            ->setBybitCommission($bybitCommission)
-            ->setOrderAmount($orderAmount)
-            ->setBuyPercent($buyPercent)
+            ->setBybitCommission($settings->getBybitCommission())
+            ->setOrderAmount($settings->getOrderAmount())
+            ->setBuyPercent($settings->getBuyPercent())
             ->setMinOrderAmt($minOrderAmt)
-            ->setSalePercent($salePercent)
+            ->setSellPercent($settings->getSellPercent())
             ->setQuotedBalance($quotedCoinBalance)
             ->setBaseBalance($baseCoinBalance)
-            ->setPair($pair)
+            ->setPair($settings->getPair())
             ->setOrder($order)
             ->setCurrentPairPrice($currentPairPrice);
 

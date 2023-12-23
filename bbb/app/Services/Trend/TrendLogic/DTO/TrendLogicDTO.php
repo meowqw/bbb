@@ -11,7 +11,7 @@ class TrendLogicDTO
     private float $bybitCommission;
     private float $currentPairPrice;
     private float $buyPercent;
-    private float $salePercent;
+    private float $sellPercent;
     private float $minOrderAmt;
     private string $pair;
     private float $quotedBalance;
@@ -147,18 +147,18 @@ class TrendLogicDTO
     /**
      * @return float
      */
-    public function getSalePercent(): float
+    public function getSellPercent(): float
     {
-        return $this->salePercent;
+        return $this->sellPercent;
     }
 
     /**
-     * @param float $salePercent
+     * @param float $sellPercent;
      * @return TrendLogicDTO
      */
-    public function setSalePercent(float $salePercent): TrendLogicDTO
+    public function setSellPercent(float $sellPercent): TrendLogicDTO
     {
-        $this->salePercent = $salePercent;
+        $this->sellPercent = $sellPercent;
         return $this;
     }
 

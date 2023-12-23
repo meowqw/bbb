@@ -15,7 +15,7 @@ class Setting extends Model
     const
         ORDER_AMOUNT_CODE = 'order_amount',
         BUY_PERCENT_DIFFERENCE_CODE = 'buy_percent_difference',
-        SALE_PERCENT_DIFFERENCE_CODE = 'sale_percent_difference',
+        SELL_PERCENT_DIFFERENCE_CODE = 'sell_percent_difference',
         PRICE_TREND_LIMIT_CODE = 'price_trend_limit',
         BYBIT_COMMISSION_CODE = 'bybit_commission',
         BASE_COIN = 'base_coin',

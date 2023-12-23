@@ -15,7 +15,7 @@ class Request extends Model
 {
     const
         TYPE_BUY = 'buy',
-        TYPE_SALE = 'sale';
+        TYPE_SELL = 'sell';
 
     /**
      * @return string

@@ -91,7 +91,7 @@ class BybitService
      * @param float $amount
      * @return bool
      */
-    public static function sale(string $pair, float $amount): bool
+    public static function sell(string $pair, float $amount): bool
     {
         $query = [
             'symbol' => $pair,
@@ -120,7 +120,7 @@ class BybitService
         if ($retCode == 0) {
             return true;
         } else {
-            Log::error("Buy/Sale error, $retMessage");
+            Log::error("Buy/Sell error, $retMessage");
             return false;
         }
     }
