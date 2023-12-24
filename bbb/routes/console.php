@@ -19,5 +19,6 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Artisan::command('test', function () {
-    \App\Services\Bybit\BybitService::getCurrentPrice('SOLUSDT');
+    dd(\App\Services\Bybit\BybitService::getCurrentPrice('SOLUSDT'));
+    dd(\App\Services\Bybit\BybitService::getWalletBalance('USDT'));
 });

@@ -15,13 +15,13 @@ class BybitService
     public static function getWalletBalance(string $coin): float
     {
         $query = [
-            'accountType' => 'SPOT',
+            'accountType' => 'UNIFIED',
             'coin' => $coin,
         ];
 
         $client = ApiClientService::getClient();
         $response = $client->account()->getWalletBalance($query);
-        return $response['result']['list'][0]['coin'][0]['free'];
+        return (float)$response['result']['list'][0]['coin'][0]['walletBalance'];
 
     }
 
@@ -36,13 +36,13 @@ class BybitService
         $query = [
             'symbol' => $pair,
             'limit' => 1,
-            'category' => 'linear',
+            'category' => 'spot',
             'interval' => 1
         ];
 
         $client = ApiClientService::getClient();
-        $response = $client->market()->getMarkPriceKline($query);
-        return $response['result']['list'][0][4];
+        $response = $client->market()->getKline($query);
+        return (float)$response['result']['list'][0][4];
     }
 
     /**
@@ -61,7 +61,7 @@ class BybitService
 
         $client = ApiClientService::getClient();
         $response = $client->market()->getInstrumentsInfo($query);
-        return $response['result']['list'][0]['lotSizeFilter']['minOrderAmt'];
+        return (float)$response['result']['list'][0]['lotSizeFilter']['minOrderAmt'];
     }
 
     /**
