@@ -15,19 +15,19 @@ return new class extends Migration {
                     'type' => 'main',
                     'name' => 'Размер ордера',
                     'code' => 'order_amount',
-                    'value' => '10'
+                    'value' => '5'
                 ],
                 [
                     'type' => 'main',
                     'name' => 'Процент на покупку',
                     'code' => 'buy_percent_difference',
-                    'value' => '0.1'
+                    'value' => '-0.3'
                 ],
                 [
                     'type' => 'main',
                     'name' => 'Процент на продажу',
                     'code' => 'sell_percent_difference',
-                    'value' => '0.15'
+                    'value' => '0.4'
                 ],
                 [
                     'type' => 'main',
@@ -58,6 +58,12 @@ return new class extends Migration {
                     'name' => 'Текущий статус сервиса',
                     'code' => 'service_status',
                     'value' => 'off'
+                ],
+                [
+                    'type' => 'main',
+                    'name' => 'Время, которое дается ордеру, чтобы совершить заявку',
+                    'code' => 'long_lived_time',
+                    'value' => '15'
                 ],
             ]
         );

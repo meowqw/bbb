@@ -36,6 +36,6 @@ class ExchangeService
         $currentPairPriceWithCommission = self::getCurrentPairPriceWithCommission($dto);
 
         // разница между стартовой и текущей + комиссия
-        return abs(($startPairPrice - $currentPairPriceWithCommission) / $startPairPrice * 100);
+        return ($currentPairPriceWithCommission - $startPairPrice) / $currentPairPriceWithCommission * 100;
     }
 }

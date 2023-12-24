@@ -19,6 +19,7 @@ class Setting extends Model
         SELL_PERCENT_DIFFERENCE_CODE = 'sell_percent_difference',
         PRICE_TREND_LIMIT_CODE = 'price_trend_limit',
         BYBIT_COMMISSION_CODE = 'bybit_commission',
+        LONG_LIVED_TIME = 'long_lived_time',
         BASE_COIN = 'base_coin',
         QUOTED_COIN = 'quoted_coin';
 

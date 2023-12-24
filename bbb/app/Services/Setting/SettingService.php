@@ -37,6 +37,7 @@ class SettingService
         $sellPercent = (float)$settings->where('code', Setting::SELL_PERCENT_DIFFERENCE_CODE)->first()->getValue();
         $bybitCommission = (float)$settings->where('code', Setting::BYBIT_COMMISSION_CODE)->first()->getValue();
         $orderAmount = (float)$settings->where('code', Setting::ORDER_AMOUNT_CODE)->first()->getValue();
+        $longLivedTime = (int)$settings->where('code', Setting::LONG_LIVED_TIME)->first()->getValue();
 
         return (new SettingsDTO())
             ->setPair($pair)
@@ -45,6 +46,7 @@ class SettingService
             ->setBuyPercent($buyPercent)
             ->setSellPercent($sellPercent)
             ->setBybitCommission($bybitCommission)
+            ->setLongLivedTime($longLivedTime)
             ->setOrderAmount($orderAmount);
     }
 

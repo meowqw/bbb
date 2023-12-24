@@ -21,11 +21,15 @@ class DecreaseLogic implements TrendLogicInterface
         // разница между стартовой и текущей + комиссия
         $pricePercentDifference = ExchangeService::getDifferenceBetweenStartAndCurrent($dto);
 
+        Log::info('Падение: Ордер №' . $dto->getOrderId() .
+            'Текущий процент: ' . $pricePercentDifference . PHP_EOL .
+            'Ожидаемый: ' . $dto->getBuyPercent());
+
         // если ожидаем процент больше чем процент разницы
-        if ($dto->getBuyPercent() > $pricePercentDifference) {
+        if ($dto->getBuyPercent() < $pricePercentDifference) {
             Log::info(
                 'Падение: Ордер №' . $dto->getOrderId() .
-                ' ожидаемый процент (' . $dto->getBuyPercent() . ') > процента текущей разницы (' .
+                ' ожидаемый процент (' . $dto->getBuyPercent() . ') < процента текущей разницы (' .
                 $pricePercentDifference . ')'
             );
             return;

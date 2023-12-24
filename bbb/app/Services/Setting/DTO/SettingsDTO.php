@@ -12,6 +12,7 @@ class SettingsDTO
     private float $bybitCommission;
     private float $orderAmount;
     private string $serviceStatus;
+    private int $longLivedTime;
 
     /**
      * @return string
@@ -154,6 +155,24 @@ class SettingsDTO
     public function setServiceStatus(string $serviceStatus): SettingsDTO
     {
         $this->serviceStatus = $serviceStatus;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLongLivedTime(): int
+    {
+        return $this->longLivedTime;
+    }
+
+    /**
+     * @param int $longLivedTime
+     * @return SettingsDTO
+     */
+    public function setLongLivedTime(int $longLivedTime): SettingsDTO
+    {
+        $this->longLivedTime = $longLivedTime;
         return $this;
     }
 }
