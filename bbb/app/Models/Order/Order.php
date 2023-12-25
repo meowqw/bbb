@@ -15,6 +15,7 @@ class Order extends Model
 {
     const
         STATUS_OPEN = 'open',
+        STATUS_LONG_LIVED = 'long_lived',
         STATUS_CLOSE = 'close';
 
     /**

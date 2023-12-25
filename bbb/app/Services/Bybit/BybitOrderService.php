@@ -6,8 +6,10 @@ use App\Models\Order\Order;
 use App\Models\PriceHistory\PriceHistory;
 use App\Models\Request\Request;
 use App\Models\Setting\Setting;
+use App\Services\Exchange\ExchangeService;
 use App\Services\Setting\SettingService;
 use App\Services\Trend\TrendLogic;
+use App\Services\Trend\TrendLogic\DecreaseLogic;
 use App\Services\Trend\TrendLogic\DTO\TrendLogicDTO;
 use App\Services\Trend\TrendLogic\TrendLogicFactory;
 use App\Services\Trend\TrendService;
@@ -60,7 +62,7 @@ class BybitOrderService
 
         // получение тренда
         $trend = TrendService::getTrend($order->getId());
-        Log::info('Ордер №' . $order->getId() . ' на текущий момент имеет тренд ' . $trend->value);
+        Log::info('Ордер №' . $order->getId() . ' имеет тренд ' . strtoupper($trend->value));
 
         if ($trend == TrendLogic::Empty) {
             return;
@@ -79,20 +81,20 @@ class BybitOrderService
             ->setOrder($order)
             ->setCurrentPairPrice($currentPairPrice);
 
+        $pricePercentDifference = ExchangeService::getDifferenceBetweenStartAndCurrent($trendLogicDTO);
+
+        Log::info('Ордер №' . $trendLogicDTO->getOrderId() . ' ' .
+            'Текущий процент: ' . $pricePercentDifference . '/' .
+            'Ожидаемый: ' . $trendLogicDTO->getBuyPercent());
+
         $trendLogic = TrendLogicFactory::getTrendLogic($trend);
         $trendLogic->execute($trendLogicDTO);
 
-        self::longLivedOrder($order, $settings->getLongLivedTime());
+        $order = self::longLivedOrder($order, $settings->getLongLivedTime());
 
-        // завершение работы после закрытия ордера
-//        /** @var Order $newOrder */
-//        $newOrder = Order::query()->where('id', $order->getId())->first();
-//        if ($newOrder->getStatus() == Order::STATUS_CLOSE) {
-//            /** @var Setting $setting */
-//            $setting = Setting::query()->where('code', Setting::SERVICE_STATUS_CODE)->first();
-//            $setting->setValue('off');
-//            $setting->save();
-//        }
+        if ($order->getStatus() == Order::STATUS_LONG_LIVED) {
+            self::longLivedLogic($trendLogicDTO);
+        }
     }
 
     /**
@@ -100,19 +102,36 @@ class BybitOrderService
      *
      * @param Order $order
      * @param int $longLivedTime
-     * @return void
+     * @return Order
      */
-    private static function longLivedOrder(Order $order, int $longLivedTime): void
+    private static function LongLivedOrder(Order $order, int $longLivedTime): Order
     {
         if (now()->diffInMinutes($order->getCreateAt()) < $longLivedTime) {
-            return;
+            return $order;
         }
 
         $requestExists = Request::query()->where('order_id', $order->getId())->exists();
         if (!$requestExists) {
-            $order->setStatus('close');
+            $order->setStatus(Order::STATUS_LONG_LIVED);
             $order->save();
             Log::info('Ордер №' . $order->getId() . ' закрыт как долгожитель !');
         }
+
+        return $order;
+    }
+
+    /**
+     * Поведение при закрытии ордера как долгожителя
+     *
+     * @param TrendLogicDTO $dto
+     * @return void
+     */
+    private static function longLivedLogic(TrendLogicDTO $dto): void
+    {
+        Log::info('Отработана логика долгожителя, создан ордер и произведена ЗАКУПКА');
+        $order = (new Order())->setStatus(Order::STATUS_OPEN)->setPair($dto->getPair());
+        $order->save();
+        $dto->setOrder($order)->setOrderId($order->getId());
+        DecreaseLogic::buy($dto, $dto->getOrderAmount());
     }
 }

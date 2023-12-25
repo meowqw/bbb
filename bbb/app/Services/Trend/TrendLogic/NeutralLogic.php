@@ -22,10 +22,6 @@ class NeutralLogic implements TrendLogicInterface
         // разница между стартовой и текущей + комиссия
         $pricePercentDifference = ExchangeService::getDifferenceBetweenStartAndCurrent($dto);
 
-        Log::info('Нейтральная: Ордер №' . $dto->getOrderId() .
-            ' Текущий процент: ' . $pricePercentDifference . PHP_EOL .
-            'Ожидаемый: ' . $dto->getSellPercent());
-
         // получить инфо есть ли запросы на покупку
         $buyRequestsExists = Request::query()
             ->where('order_id', $dto->getOrderId())
@@ -37,11 +33,6 @@ class NeutralLogic implements TrendLogicInterface
         }
 
         if ($pricePercentDifference < $dto->getSellPercent()) {
-            Log::info(
-                'Нейтральная: Ордер №' . $dto->getOrderId() .
-                ' текущий процент разницы (' . $pricePercentDifference .
-                ') < ожидаемого процента для продажи (' . $dto->getSellPercent() . ')'
-            );
             return;
         }
 
