@@ -84,8 +84,8 @@ class BybitOrderService
         $pricePercentDifference = ExchangeService::getDifferenceBetweenStartAndCurrent($trendLogicDTO);
 
         Log::info('Ордер №' . $trendLogicDTO->getOrderId() . ' ' .
-            'Текущий процент: ' . $pricePercentDifference . '/' .
-            'Ожидаемый: ' . $trendLogicDTO->getBuyPercent());
+            'exp: ' . round($pricePercentDifference, 5) . ' ' .
+            'buy: ' . $trendLogicDTO->getBuyPercent() . ' ' . 'sell: ' . $trendLogicDTO->getSellPercent());
 
         $trendLogic = TrendLogicFactory::getTrendLogic($trend);
         $trendLogic->execute($trendLogicDTO);
@@ -131,6 +131,7 @@ class BybitOrderService
         Log::info('Отработана логика долгожителя, создан ордер и произведена ЗАКУПКА');
         $order = (new Order())->setStatus(Order::STATUS_OPEN)->setPair($dto->getPair());
         $order->save();
+        PriceHistory::query()->where('order_id', $dto->getOrderId())->update(['order_id' => $order->getId()]);
         $dto->setOrder($order)->setOrderId($order->getId());
         DecreaseLogic::buy($dto, $dto->getOrderAmount());
     }

@@ -15,7 +15,6 @@ class IncreaseLogic implements TrendLogicInterface
      */
     public function execute(TrendLogicDTO $dto): void
     {
-        Log::info('Повышение: Ордер №' . $dto->getOrderId());
         return;
     }
 }
